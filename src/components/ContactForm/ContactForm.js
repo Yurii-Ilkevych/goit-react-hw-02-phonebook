@@ -1,41 +1,57 @@
 import React, { Component } from 'react';
-import { nanoid } from 'nanoid'
+import PropTypes from 'prop-types';
+import { nanoid } from 'nanoid';
+import { Form, Name, Number, Submit, Wrapper } from './ContactForm.styled';
 class ContactForm extends Component {
+  static defaultProps = {
+    name: '',
+    number: '',
+  };
+
+  static propTypes = {
+    name: PropTypes.string.isRequired,
+    number: PropTypes.string.isRequired,
+  };
+
   state = {
     name: '',
     number: '',
   };
 
+  hundleSubmit = evt => {
+    evt.preventDefault();
+    const contact = {
+      id: nanoid(),
+      name: this.state.name,
+      number: this.state.number,
+    };
+    this.props.onForm(contact);
+    this.resetValue();
+  };
 
-  hundleSubmit = (evt) => {
-evt.preventDefault()
-const contact = {id: nanoid(), name: this.state.name, number: this.state.number}
-this.props.onForm(contact)
-this.resetValue()
-  }
-
-  handleValue = (evt) => {
-    const {name, value} = evt.currentTarget
+  handleValue = evt => {
+    const { name, value } = evt.currentTarget;
     this.setState({
-    [name]: value
-    })
-  }
+      [name]: value,
+    });
+  };
 
-resetValue = () => {
-  this.setState({
-    name: '',
-    number: '',
-  })
-}
+  resetValue = () => {
+    this.setState({
+      name: '',
+      number: '',
+    });
+  };
 
   render() {
-    const {name, number} = this.state
+    const { name, number } = this.state;
     return (
       <>
-        <form onSubmit={this.hundleSubmit}>
+        <Form onSubmit={this.hundleSubmit}>
+          <Wrapper>
           <label>
             Name
-            <input
+            <Name
               type="text"
               name="name"
               pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
@@ -46,7 +62,8 @@ resetValue = () => {
             />
           </label>
           <label>
-            <input
+            Number
+            <Number
               type="tel"
               name="number"
               pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
@@ -56,10 +73,16 @@ resetValue = () => {
               onChange={this.handleValue}
             />
           </label>
-          <button type='submit'>Add contact</button>
-        </form>
+          </Wrapper>
+          <Submit type="submit">Add contact</Submit>
+        </Form>
       </>
     );
   }
 }
 export default ContactForm;
+
+ContactForm.propTypes = {
+  name: PropTypes.string.isRequired,
+  number: PropTypes.string.isRequired,
+};
